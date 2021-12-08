@@ -1,6 +1,9 @@
+const path = require("path");
 const { readFileSync } = require("fs");
 
-const commands = readFileSync("input.txt", { encoding: "utf-8" }).split(/\s+/);
+const commands = readFileSync(path.join(__dirname, "input.txt"), {
+  encoding: "utf-8",
+}).split(/\s+/);
 
 part1(commands);
 part2(commands);
@@ -36,7 +39,7 @@ function part2(commands) {
     depth: 0,
     forward(length) {
       this.horizontal += length;
-      this.depth += (this.aim * length);
+      this.depth += this.aim * length;
     },
     up(length) {
       this.aim -= length;

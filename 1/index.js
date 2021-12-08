@@ -1,7 +1,10 @@
+const path = require("path");
 const { readFileSync } = require("fs");
 const { EOL } = require("os");
 
-const depths = readFileSync("input.txt", { encoding: "utf-8" })
+const depths = readFileSync(path.join(__dirname, "input.txt"), {
+  encoding: "utf-8",
+})
   .split(EOL)
   .map((x) => x >> 0);
 

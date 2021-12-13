@@ -40,57 +40,90 @@ for (let i = 1; i < rowLength; i += 2) {
   }
 }
 
-part1(lines.linear, generateMatrix(graphWidth, graphHeight));
+const graph = generateGraph(graphWidth, graphHeight);
 
-function part1(rows, matrix) {
+part1(lines.linear, graph);
+part2(lines.diagonal, graph);
+
+function part1(rows, graph) {
   const rowLength = rows.length;
-  let totalMultipleIntersections = 0;
 
   for (let i = 0; i < rowLength; i++) {
-    const { x1, x2, y1, y2 } = rows[i];
-
-    if (x1 === x2) {
-      const yRange = [y1, y2];
-
-      const line = {
-        x: x1,
-        y: yRange.sort((a, b) => (a < b ? -1 : 1)),
-      };
-
-      for (let i = line.y[0]; i <= line.y[1]; i++) {
-        matrix[i][line.x]++;
-
-        if (matrix[i][line.x] === 2) {
-          totalMultipleIntersections++;
-        }
-      }
-    } else {
-      const xRange = [x1, x2];
-
-      const line = {
-        x: xRange.sort((a, b) => (a < b ? -1 : 1)),
-        y: y1,
-      };
-
-      for (let i = line.x[0]; i <= line.x[1]; i++) {
-        matrix[line.y][i]++;
-
-        if (matrix[line.y][i] === 2) {
-          totalMultipleIntersections++;
-        }
-      }
-    }
+    graph.plotLine(rows[i]);
   }
 
-  console.log(`Part 1: ${totalMultipleIntersections}`);
+  console.log(`Part 1: ${graph.intersections}`);
 }
 
-function generateMatrix(rowLength, rowHeight) {
-  const matrix = [];
+function part2(rows, graph) {
+  const rowLength = rows.length;
 
-  for (let i = 0; i <= rowHeight; i++) {
-    matrix.push(new Array(rowLength).fill(0));
+  for (let i = 0; i < rowLength; i++) {
+    graph.plotLine(rows[i]);
   }
 
-  return matrix;
+  console.log(`Part 2: ${graph.intersections}`);
+}
+
+function generateGraph(graphLength, graphHeight) {
+  const graph = {
+    matrix: [],
+    intersections: 0,
+    plotHorizontal: function ({ x1, x2 }, y) {
+      let x = x2 > x1 ? x1 : x2;
+      let end = x === x1 ? x2 : x1;
+
+      for (x; x <= end; x++) {
+        this.matrix[y][x]++;
+
+        if (this.matrix[y][x] === 2) {
+          this.intersections++;
+        }
+      }
+    },
+    plotVertical: function ({ y1, y2 }, x) {
+      let y = y2 > y1 ? y1 : y2;
+      let end = y === y1 ? y2 : y1;
+
+      for (y; y <= end; y++) {
+        this.matrix[y][x]++;
+
+        if (this.matrix[y][x] === 2) {
+          this.intersections++;
+        }
+      }
+    },
+    plotDiagonal: function ({ x1, x2, y1, y2 }) {
+      const m = (y1 - y2) / (x1 - x2);
+      const c = y1 - x1 * m;
+
+      let x = x1 > x2 ? x2 : x1;
+      const end = x === x2 ? x1 : x2;
+
+      for (x; x <= end; x++) {
+        let y = m * x + c;
+
+        this.matrix[y][x]++;
+
+        if (this.matrix[y][x] === 2) {
+          this.intersections++;
+        }
+      }
+    },
+    plotLine: function (points) {
+      if (points.x1 === points.x2) {
+        this.plotVertical(points, points.x1);
+      } else if (points.y1 === points.y2) {
+        this.plotHorizontal(points, points.y1);
+      } else if (points.x1 !== points.x2 && points.y1 !== points.y2) {
+        this.plotDiagonal(points);
+      }
+    },
+  };
+
+  for (let i = 0; i <= graphHeight; i++) {
+    graph.matrix.push(new Array(graphLength + 1).fill(0));
+  }
+
+  return graph;
 }

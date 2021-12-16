@@ -1,12 +1,7 @@
-const path = require("path");
-const { readFileSync } = require("fs");
-const { EOL } = require("os");
+import { getInput } from "../../utils/aoc.js";
+import { EOL } from "os";
 
-const rows = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-})
-  .split(EOL)
-  .map((v) => v.split(""));
+const rows = (await getInput()).split(EOL).map((v) => v.split(""));
 
 solve(rows);
 

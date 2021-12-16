@@ -1,9 +1,6 @@
-const path = require("path");
-const { readFileSync } = require("fs");
+import { getInput } from "../../utils/aoc.js";
 
-const rows = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-}).split(/\s+(?:\|\s+)*/);
+const rows = (await getInput()).split(/\s+(?:\|\s+)*/);
 
 part1(rows);
 part2(rows);

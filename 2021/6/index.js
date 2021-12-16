@@ -1,9 +1,6 @@
-const path = require("path");
-const { readFileSync } = require("fs");
+import { getInput } from "../../utils/aoc.js";
 
-const rows = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-}).split(",");
+const rows = (await getInput()).split(",");
 
 const fish = new Array(7).fill(0);
 const totalFish = rows.length;

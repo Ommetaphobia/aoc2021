@@ -1,9 +1,6 @@
-const path = require("path");
-const { readFileSync } = require("fs");
+import { getInput } from "../../utils/aoc.js";
 
-const numbers = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-})
+const numbers = (await getInput())
   .split(",")
   .map((v) => ~~v)
   .sort((a, b) => a - b);

@@ -1,9 +1,6 @@
-const path = require("path");
-const { readFileSync } = require("fs");
+import { getInput } from "../../utils/aoc.js";
 
-let rows = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-}).split(/\s+/);
+let rows = (await getInput()).split(/\s+/);
 
 const numbers = rows
   .shift()
@@ -81,7 +78,7 @@ function part2(numbers, bingoCards) {
             total = sum * numbers[i];
             break;
           } else {
-              bingoCards.splice(j, 1);
+            bingoCards.splice(j, 1);
           }
         }
       }

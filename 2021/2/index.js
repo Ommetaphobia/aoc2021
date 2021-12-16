@@ -1,9 +1,6 @@
-const path = require("path");
-const { readFileSync } = require("fs");
+import { getInput } from "../../utils/aoc.js";
 
-const commands = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-}).split(/\s+/);
+const commands = (await getInput()).split(/\s+/);
 
 part1(commands);
 part2(commands);

@@ -1,12 +1,7 @@
-const path = require("path");
-const { readFileSync } = require("fs");
-const { EOL } = require("os");
+import { getInput } from "../../utils/aoc.js";
+import { EOL } from "os";
 
-const depths = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-})
-  .split(EOL)
-  .map((x) => x >> 0);
+const depths = (await getInput()).split(EOL).map((x) => x >> 0);
 
 part1(depths);
 part2(depths);

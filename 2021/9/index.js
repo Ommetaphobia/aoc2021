@@ -1,10 +1,7 @@
-const path = require("path");
-const { readFileSync } = require("fs");
-const { EOL } = require("os");
+import { getInput } from "../../utils/aoc.js";
+import { EOL } from "os";
 
-const rows = readFileSync(path.join(__dirname, "input.txt"), {
-  encoding: "utf-8",
-})
+const rows = (await getInput())
   .split(EOL)
   .map((a) => a.split("").map((v) => ~~v));
 
@@ -19,7 +16,7 @@ function part1(rows, lastRow, lastCol) {
 
   let sum = 0;
 
-  for ({ height } of lowPointGenerator) {
+  for (const { height } of lowPointGenerator) {
     sum += height + 1;
   }
 
@@ -32,7 +29,7 @@ function part2(rows, lastRow, lastCol) {
 
   const allBasinSize = [];
 
-  for ({ x, y } of lowPointGenerator) {
+  for (const { x, y } of lowPointGenerator) {
     const basin = getBasinSize(rows, lastRow, lastCol, { x, y }, new Set());
     allBasinSize.push(basin.size);
   }
@@ -79,7 +76,7 @@ function getBasinSize(rows, lastRow, lastCol, { x, y }, acc) {
 
   const adjGenerator = getAdjacent(lastRow, lastCol, { x, y });
 
-  for (point of adjGenerator) {
+  for (const point of adjGenerator) {
     if (
       acc.has(`y${point.y}_x${point.x}`) ||
       rows[point.y][point.x] === 9 ||

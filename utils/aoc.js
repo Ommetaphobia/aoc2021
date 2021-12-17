@@ -14,14 +14,19 @@ const defaultOpts = {
 };
 
 async function createInputFile(opts) {
-  const { day, year } = Object.assign(defaultOpts, opts);
+  const { day, year, sample } = Object.assign(defaultOpts, opts);
 
   console.log("Fetching input...");
-  const resp = await fetch(`${url}/${year}/day/${day}/input`, {
-    headers: {
-      cookie: `session=${process.env.SESSION}`,
-    },
-  });
+
+  const resp = await fetch(
+    `${url}/${year}/day/${day}${sample ? "" : "/input"}`,
+    {
+      headers: {
+        cookie: `session=${process.env.SESSION}`,
+      },
+    }
+  );
+
   console.log("Done.");
 
   if (resp.status !== 200) {
@@ -29,13 +34,23 @@ async function createInputFile(opts) {
   }
 
   const filePath = path.join(process.env.PWD, year, day, "input.txt");
-  const body = await resp.text();
+  let input = await resp.text();
+
+  if (sample) {
+    const matches = input.match(/(?:<code>)(?<input>(.|\s)*?)(?:<\/code>)/);
+
+    if (!matches?.groups?.input === undefined) {
+      throw new Error(`Failed to parse sample input.`);
+    }
+
+    input = matches.groups.input;
+  }
 
   console.log("Writing input to file...");
-  await writeFileSync(filePath, body, { flag: "w" });
+  await writeFileSync(filePath, input, { flag: "w" });
   console.log("Done.");
 
-  return body;
+  return input;
 }
 
 async function submit({ day, year, level }, ans) {

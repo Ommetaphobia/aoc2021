@@ -8,7 +8,8 @@
     "scripts": {
         "build": "node -r dotenv/config scripts/build.js",
         "submit": "node -r dotenv/config scripts/submit.js",
-        "solve": "node -r dotenv/config scripts/solve.js"
+        "solve": "node -r dotenv/config scripts/solve.js",
+        "input": "node -r dotenv/config scripts/input.js"
     },
     "type": "module"
 }

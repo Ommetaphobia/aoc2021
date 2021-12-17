@@ -5,11 +5,11 @@ let rows = (await getInput()).split(/\s+/);
 const numbers = rows
   .shift()
   .split(",")
-  .map((x) => x >> 0);
+  .map((x) => ~~x);
 const bingoCardRows = 5;
 const bingoCardColumns = 5;
 
-rows = rows.map((x) => x >> 0);
+rows = rows.map((x) => ~~x);
 
 part1(numbers, generateBingoCards(rows, bingoCardRows, bingoCardColumns));
 part2(numbers, generateBingoCards(rows, bingoCardRows, bingoCardColumns));
@@ -93,7 +93,7 @@ function part2(numbers, bingoCards) {
 }
 
 function sumOfNumbers(numbers) {
-  return numbers.reduce((acc, cur) => (acc += cur >> 0), 0);
+  return numbers.reduce((acc, cur) => (acc += ~~cur), 0);
 }
 
 function generateBingoCards(rows, bingoCardRows, bingoCardColumns) {

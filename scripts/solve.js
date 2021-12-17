@@ -5,16 +5,19 @@ import { fork } from "child_process";
 
 const now = new Date();
 
-const { day, year } = minimist(process.argv.slice(2), {
+const { day, year, sample } = minimist(process.argv.slice(2), {
   alias: {
     year: "y",
     day: "d",
+    sample: "s",
   },
   default: {
     year: now.getFullYear(),
     day: now.getDay(),
+    sample: false,
   },
   string: ["year", "day"],
+  boolean: "sample",
 });
 
 const filePath = path.join(process.env.PWD, year, day, "index.js");
@@ -26,7 +29,14 @@ try {
   process.exit(1);
 }
 
-const child = fork(filePath, ["--year", year, "--day", day]);
+const child = fork(filePath, [
+  "--year",
+  year,
+  "--day",
+  day,
+  "--sample",
+  sample,
+]);
 
 child.on("error", (e) => {
   console.error(e);

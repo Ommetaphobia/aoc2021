@@ -3,13 +3,28 @@ import path from "path";
 import { writeFileSync } from "fs";
 import { readFile } from "fs/promises";
 import minimist from "minimist";
+import { EOL } from "os";
 
 const url = "https://adventofcode.com";
 const now = new Date();
+const inputFilePath = ({ year, day, sample }) =>
+  path.join(process.env.PWD, year, day, `${sample ? "sample" : "input"}.txt`);
+const decodeHTML = (str) =>
+  str.replace(
+    /&(\D+);/gi,
+    (tag) =>
+      ({
+        "&amp;": "&",
+        "&lt;": "<",
+        "&gt;": ">",
+        "&#39;": "'",
+        "&quot;": '"',
+      }[tag])
+  );
 
 const defaultOpts = {
-  day: now.getDay,
-  year: now.getFullYear,
+  day: now.getDay(),
+  year: now.getFullYear(),
   sample: false,
 };
 
@@ -33,21 +48,26 @@ async function createInputFile(opts) {
     throw new Error(`Failed to fetch input: ${resp.error}`);
   }
 
-  const filePath = path.join(process.env.PWD, year, day, "input.txt");
   let input = await resp.text();
 
   if (sample) {
-    const matches = input.match(/(?:<code>)(?<input>(.|\s)*?)(?:<\/code>)/);
+    const matches = input.match(
+      /(?:<pre><code>)(?<input>(.|\s)*?)(?:<\/code><\/pre>)/
+    );
 
     if (!matches?.groups?.input === undefined) {
       throw new Error(`Failed to parse sample input.`);
     }
 
-    input = matches.groups.input;
+    input = decodeHTML(matches.groups.input);
   }
 
+  input = input.trimEnd().replace(/(\r\n|\n|\r)/gm, EOL);
+
   console.log("Writing input to file...");
-  await writeFileSync(filePath, input, { flag: "w" });
+  await writeFileSync(inputFilePath({ day, year, sample }), input, {
+    flag: "w",
+  });
   console.log("Done.");
 
   return input;
@@ -73,28 +93,24 @@ async function submit({ day, year, level }, ans) {
 }
 
 async function getInput(opts) {
-  const { year, day } = opts
+  const { year, day, sample } = opts
     ? opts
     : minimist(process.argv.slice(2), {
+        default: {
+          sample: false,
+        },
         string: ["year", "day"],
+        boolean: "sample",
       });
 
-  const filePath = path.join(process.env.PWD, year, day, "input.txt");
   let input = "";
 
   try {
-    const buf = await readFile(filePath);
+    const buf = await readFile(inputFilePath({ day, year, sample }));
     input = buf.toString();
   } catch (e) {
     if (e instanceof Error && e.code === "ENOENT") {
-      console.log("Fetching input...");
-
-      try {
-        input = await get({ year, day });
-      } catch (e) {
-        console.error(e.message);
-        process.exit(1);
-      }
+      input = await createInputFile({ year, day, sample });
     } else {
       console.error(e.message);
       process.exit(1);

@@ -1,7 +1,7 @@
 import { getInput } from "../../utils/aoc.js";
 import { EOL } from "os";
 
-const depths = (await getInput()).split(EOL).map((x) => x >> 0);
+const depths = (await getInput()).split(EOL).map((x) => ~~x);
 
 part1(depths);
 part2(depths);

@@ -14,7 +14,7 @@ function part1(rows) {
 
   for (let i = 0; i < rows.length; i++) {
     for (let j = 0; j < totals.length; j++) {
-      totals[j] += rows[i][j] >> 0;
+      totals[j] += ~~rows[i][j];
     }
   }
 

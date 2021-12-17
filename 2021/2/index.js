@@ -21,7 +21,7 @@ function part1(commands) {
   };
 
   for (let i = 0; i < commands.length - 1; i += 2) {
-    sub[commands[i]](commands[i + 1] >> 0);
+    sub[commands[i]](~~commands[i + 1]);
   }
 
   const product = sub.depth * sub.horizontal;
@@ -47,7 +47,7 @@ function part2(commands) {
   };
 
   for (let i = 0; i < commands.length - 1; i += 2) {
-    sub[commands[i]](commands[i + 1] >> 0);
+    sub[commands[i]](~~commands[i + 1]);
   }
 
   const product = sub.depth * sub.horizontal;

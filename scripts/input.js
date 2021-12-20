@@ -5,19 +5,16 @@ import minimist from "minimist";
 
 const now = new Date();
 
-const { day, year, sample } = minimist(process.argv.slice(2), {
+const { day, year } = minimist(process.argv.slice(2), {
   alias: {
     year: "y",
     day: "d",
-    sample: "s",
   },
   default: {
     year: now.getFullYear(),
     day: now.getDay(),
-    sample: false,
   },
   string: ["year", "day"],
-  boolean: "sample",
 });
 
 const dirPath = path.join(process.env.PWD, year, day);
@@ -36,7 +33,7 @@ try {
 }
 
 try {
-  await createInputFile({ year, day, sample });
+  await createInputFile({ year, day });
 } catch (e) {
   console.error(e);
   process.exit(1);

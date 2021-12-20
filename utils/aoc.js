@@ -3,44 +3,28 @@ import path from "path";
 import { writeFileSync } from "fs";
 import { readFile } from "fs/promises";
 import minimist from "minimist";
-import { EOL } from "os";
+import { EOL } from 'os';
 
 const url = "https://adventofcode.com";
 const now = new Date();
-const inputFilePath = ({ year, day, sample }) =>
-  path.join(process.env.PWD, year, day, `${sample ? "sample" : "input"}.txt`);
-const decodeHTML = (str) =>
-  str.replace(
-    /&(\D+);/gi,
-    (tag) =>
-      ({
-        "&amp;": "&",
-        "&lt;": "<",
-        "&gt;": ">",
-        "&#39;": "'",
-        "&quot;": '"',
-      }[tag])
-  );
+const inputFilePath = ({ year, day }) =>
+  path.join(process.env.PWD, year, day, "input.txt");
 
 const defaultOpts = {
   day: now.getDay(),
   year: now.getFullYear(),
-  sample: false,
 };
 
 async function createInputFile(opts) {
-  const { day, year, sample } = Object.assign(defaultOpts, opts);
+  const { day, year } = Object.assign(defaultOpts, opts);
 
   console.log("Fetching input...");
 
-  const resp = await fetch(
-    `${url}/${year}/day/${day}${sample ? "" : "/input"}`,
-    {
-      headers: {
-        cookie: `session=${process.env.SESSION}`,
-      },
-    }
-  );
+  const resp = await fetch(`${url}/${year}/day/${day}/input`, {
+    headers: {
+      cookie: `session=${process.env.SESSION}`,
+    },
+  });
 
   console.log("Done.");
 
@@ -48,24 +32,10 @@ async function createInputFile(opts) {
     throw new Error(`Failed to fetch input: ${resp.error}`);
   }
 
-  let input = await resp.text();
-
-  if (sample) {
-    const matches = input.match(
-      /(?:<pre><code>)(?<input>(.|\s)*?)(?:<\/code><\/pre>)/
-    );
-
-    if (!matches?.groups?.input === undefined) {
-      throw new Error(`Failed to parse sample input.`);
-    }
-
-    input = decodeHTML(matches.groups.input);
-  }
-
-  input = input.trimEnd().replace(/(\r\n|\n|\r)/gm, EOL);
+  let input = (await resp.text()).trimEnd().replace(/(\r\n|\n|\r)/gm, EOL);
 
   console.log("Writing input to file...");
-  await writeFileSync(inputFilePath({ day, year, sample }), input, {
+  await writeFileSync(inputFilePath({ day, year }), input, {
     flag: "w",
   });
   console.log("Done.");
@@ -110,7 +80,11 @@ async function getInput(opts) {
     input = buf.toString();
   } catch (e) {
     if (e instanceof Error && e.code === "ENOENT") {
-      input = await createInputFile({ year, day, sample });
+      if (sample) {
+        console.error(e.message);
+        process.exit(1);
+      }
+      input = await createInputFile({ year, day });
     } else {
       console.error(e.message);
       process.exit(1);

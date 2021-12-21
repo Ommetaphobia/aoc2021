@@ -116,6 +116,7 @@ async function getInput(opts) {
       process.exit(1);
     }
   }
+
   return input;
 }
 

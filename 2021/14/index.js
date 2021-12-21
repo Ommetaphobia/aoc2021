@@ -21,10 +21,10 @@ function part1(sequence, insertions, steps) {
   console.log(`Part 1: ${answer}`);
 }
 
-function part2(baseSequence, insertions, steps) {
+function part2(sequence, insertions, steps) {
   const answer = solve(sequence, insertions, steps);
 
-  console.log(`Part 1: ${answer}`);
+  console.log(`Part 2: ${answer}`);
 }
 
 function initOccurances(sequence, insertions) {

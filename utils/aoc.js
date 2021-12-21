@@ -3,12 +3,12 @@ import path from "path";
 import { writeFileSync } from "fs";
 import { readFile } from "fs/promises";
 import minimist from "minimist";
-import { EOL } from 'os';
+import { EOL } from "os";
 
 const url = "https://adventofcode.com";
 const now = new Date();
-const inputFilePath = ({ year, day }) =>
-  path.join(process.env.PWD, year, day, "input.txt");
+const inputFilePath = ({ year, day, sample }) =>
+  path.join(process.env.PWD, year, day, sample ? "sample.txt" : "input.txt");
 
 const defaultOpts = {
   day: now.getDay(),
